@@ -5,6 +5,7 @@ var body   = document.querySelector('.message-input');
 var send 	  = document.getElementById('sendMessageBtn');
 var chat 	  = document.querySelector('.chat-messages-list');
 var boradcast 	  = document.getElementById('boradcast');
+const chatHistory = document.getElementsByClassName('chatidforrealtime');
 
 send.addEventListener('click', function () {
 
@@ -18,6 +19,14 @@ send.addEventListener('click', function () {
 
 });
 
+function formatDate(date) {
+    var daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var day = daysOfWeek[date.getDay()];
+    var hour = date.getHours() % 12 || 12;
+    var period = date.getHours() >= 12 ? 'PM' : 'AM';
+    var minutes = ('0' + date.getMinutes()).slice(-2);
+    return day + ' ' + hour + ':' + minutes + ' ' + period;
+}
 
 // message.addEventListener('keypress',function(){
 // 	socket.emit('borad',{
@@ -35,11 +44,12 @@ function handleNewMessage(data) {
     console.log(data);
     console.log(data.chat_id);
     console.log(data.RealTimeResponse.chatId);
-     // Format the date
-    var createdAtDate = new Date(data.created_at);
-    var formattedDateTime = formatDate(createdAtDate);
-        
-    if (data.RealTimeResponse.chatId == data.chat_id) {
+    console.log(chatHistory.id);
+    var currentDateTime = new Date(); 
+    var formattedDateTime = formatDate(currentDateTime);
+    var chatMessagesList = document.querySelector('.chat-messages-list');
+
+    if (data.RealTimeResponse.chatId == data.chat_id && data.RealTimeResponse.chatId == chatHistory.id) {
     var isthismyMessage = data.messagememberid == RealTimeResponse.memberid ;
     var imagePath = data.RealTimeResponse.userdata;
     var senderName;
@@ -60,47 +70,43 @@ function handleNewMessage(data) {
                                     <a href="javascript:void(0)"  style="color:red; text-align:center;" data-bs-toggle="modal" data-bs-target="#deletemessage" onclick="deleteMessage(${data.body})"> <i class="bx bx-trash-alt"></i>Delete </a>
                             </div>
                             </div>`;
-                    chat.innerHTML += `
-                    <li class="chat-message ${isthismyMessage ? 'chat-message-right' : 'chat-message-left' } ">
-                                    <div class="d-flex overflow-hidden">
+                            chat.innerHTML += `
+                            <li class="chat-message ${isthismyMessage ? 'chat-message-right' : 'chat-message-left' } ">
+                                <div class="d-flex overflow-hidden">
                                     ${!isthismyMessage ? `
-                                    <div class="user-avatar flex-shrink-0 ms-3">
-                                        <div class="avatar avatar-sm" style="margin-top: 1px;">
-                                            <a href="" target="_blank">
-                                                <img src="${imageSrc}" alt="user photo" class="rounded-circle" style="margin-left:10px;" />
-                                            </a>
-                                        </div>
-                                    </div>` : ''}
-                                    
-                                ${isthismyMessage ? dropdown :''}
+                                        <div class="user-avatar flex-shrink-0 ms-3">
+                                            <div class="avatar avatar-sm" style="margin-top: 1px;">
+                                                <a href="" target="_blank">
+                                                    <img src="${imageSrc}" alt="user photo" class="rounded-circle" style="margin-left:10px;" />
+                                                </a>
+                                            </div>
+                                        </div>` : ''}
+                                    ${isthismyMessage ? dropdown :''}
                                     <div class="chat-message-wrapper flex-grow-1">
                                         <div class="chat-message-text" style="${isthismyMessage ? 'margin-right:20px' : 'margin-left:20px'} ;" >
-                                        <div class="chat-sender-name text-muted mb-1" style="cursor: pointer;">${!isthismyMessage ? senderName : ''}</div>
+                                            <div class="chat-sender-name text-muted mb-1" style="cursor: pointer;">${!isthismyMessage ? senderName : ''}</div>
                                             <p class="mb-0  ${isthismyMessage ? 'right' : 'left'}">
                                                 ${data.body}
                                             </p>
                                         </div>
-                                        </div>									
+                                        <div class="text-end text-muted mt-1" style="${isthismyMessage ? 'margin-right:20px' : 'margin-left:20px'} ;">
+                                    ${isthismyMessage ? ' <i class="bx bx-check-double text-success"></i>' : ''}
+                                    <small>${formattedDateTime}</small>
                                 </div>
-                                </div>
-                                </div>`;
+                                    </div>									
+                                </div> 
+                            </li>
+                        `;
+                        
                 
-    }};
-
-
-    function formatDate(date) {
-        var daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        var day = daysOfWeek[date.getDay()];
-        var hour = date.getHours() % 12 || 12;
-        var period = date.getHours() >= 12 ? 'PM' : 'AM';
-        var minutes = ('0' + date.getMinutes()).slice(-2);
-        return day + ' ' + hour + ':' + minutes + ' ' + period;
     }
+    chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+    };
+
+
+   
     
-    // Usage example:
-    var currentDateTime = new Date(); // Get the current date and time
-    var formattedDateTime = formatDate(currentDateTime); // Format the date and time
-    console.log(formattedDateTime); // Output: "Wed 3:15 PM" (for example)
+    
     
 
 
