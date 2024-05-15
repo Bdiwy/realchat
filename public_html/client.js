@@ -14,9 +14,6 @@ send.addEventListener('click', function () {
         currentUserId: currentUserId,
         chat_id: chat_id.value,
         body: body.value,
-        imagePath :imagePath  ,
-        imageFilename :imageFilename  ,
-        message :message ,
     });
 
 });
@@ -38,35 +35,73 @@ function handleNewMessage(data) {
     console.log(data);
     console.log(data.chat_id);
     console.log(data.RealTimeResponse.chatId);
-    if (data.RealTimeResponse.chatId == data.chat_id && data.RealTimeResponse.chatmembers.memberid == data.messagememberid) {
+     // Format the date
+    var createdAtDate = new Date(data.created_at);
+    var formattedDateTime = formatDate(createdAtDate);
+        
+    if (data.RealTimeResponse.chatId == data.chat_id) {
     var isthismyMessage = data.messagememberid == RealTimeResponse.memberid ;
+    var imagePath = data.RealTimeResponse.userdata;
+    var senderName;
+    if (data.RealTimeResponse.userType == '1') {
+        senderName = `<a href="teachers/${data.RealTimeResponse.userdata.id}">${data.RealTimeResponse.userdata.first_name+' '+data.RealTimeResponse.userdata.last_name}</a>`;
+    } else if (data.RealTimeResponse.userType == '2') {
+        senderName = `<a href="families/${data.RealTimeResponse.userdata.id}">${data.RealTimeResponse.userdata.first_name+' '+data.RealTimeResponse.userdata.last_name}</a>`;
+    } else {
+        senderName = data.RealTimeResponse.userdata.name;
+    }
+    var imageSrc = data.RealTimeResponse.userdata.image;
     var dropdown= `<div class="dropdown">
                                 <button class="btn p-0" type="button" id="chat-header-actions"
                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="bx bx-dots-vertical-rounded fs-4"></i>
                                     </button>
                                 <div class="dropdown-menu dropdown-menu-start" aria-labelledby="chat-header-actions">
-                                    <a href="javascript:void(0)"  style="color:red; text-align:center;" data-bs-toggle="modal" data-bs-target="#deletemessage" onclick="deleteMessage(${data.message})"> <i class="bx bx-trash-alt"></i>Delete </a>
+                                    <a href="javascript:void(0)"  style="color:red; text-align:center;" data-bs-toggle="modal" data-bs-target="#deletemessage" onclick="deleteMessage(${data.body})"> <i class="bx bx-trash-alt"></i>Delete </a>
                             </div>
                             </div>`;
                     chat.innerHTML += `
                     <li class="chat-message ${isthismyMessage ? 'chat-message-right' : 'chat-message-left' } ">
                                     <div class="d-flex overflow-hidden">
+                                    ${!isthismyMessage ? `
+                                    <div class="user-avatar flex-shrink-0 ms-3">
+                                        <div class="avatar avatar-sm" style="margin-top: 1px;">
+                                            <a href="" target="_blank">
+                                                <img src="${imageSrc}" alt="user photo" class="rounded-circle" style="margin-left:10px;" />
+                                            </a>
+                                        </div>
+                                    </div>` : ''}
                                     
                                 ${isthismyMessage ? dropdown :''}
                                     <div class="chat-message-wrapper flex-grow-1">
                                         <div class="chat-message-text" style="${isthismyMessage ? 'margin-right:20px' : 'margin-left:20px'} ;" >
-                                        <div class="chat-sender-name text-muted mb-1" style="cursor: pointer;">${!isthismyMessage ? 'data.message.name' : ''}</div>
-                                            <div class="file-details" style="padding:10px; padding-left:3px; ">
-                                            <b><p class="file-info-line">
-                                                <span class="file-name" ${isthismyMessage ? 'style="color:white"' : 'style="color: black ; postion:center;"'}>${data.body}</span>
-                                            </p></b>
+                                        <div class="chat-sender-name text-muted mb-1" style="cursor: pointer;">${!isthismyMessage ? senderName : ''}</div>
+                                            <p class="mb-0  ${isthismyMessage ? 'right' : 'left'}">
+                                                ${data.body}
+                                            </p>
                                         </div>
                                         </div>									
                                 </div>
                                 </div>
                                 </div>`;
-                            }};
+                
+    }};
+
+
+    function formatDate(date) {
+        var daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        var day = daysOfWeek[date.getDay()];
+        var hour = date.getHours() % 12 || 12;
+        var period = date.getHours() >= 12 ? 'PM' : 'AM';
+        var minutes = ('0' + date.getMinutes()).slice(-2);
+        return day + ' ' + hour + ':' + minutes + ' ' + period;
+    }
+    
+    // Usage example:
+    var currentDateTime = new Date(); // Get the current date and time
+    var formattedDateTime = formatDate(currentDateTime); // Format the date and time
+    console.log(formattedDateTime); // Output: "Wed 3:15 PM" (for example)
+    
 
 
 
