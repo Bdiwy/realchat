@@ -6,6 +6,7 @@ var send 	  = document.getElementById('sendMessageBtn');
 var chat 	  = document.querySelector('.chat-messages-list');
 var boradcast 	  = document.getElementById('boradcast');
 const chatHistory = document.getElementsByClassName('chatidforrealtime');
+const deleteMessageLink = document.getElementById('deleteMessageLink');
 
 send.addEventListener('click', function () {
 
@@ -17,6 +18,18 @@ send.addEventListener('click', function () {
         body: body.value,
     });
 
+    setTimeout(() => {
+        socket.emit('messagedata', {
+            newmessage: "newmessage"
+        });
+        const deleteMessageLink = document.getElementById('deleteMessageLink');
+        if (deleteMessageLink) {
+            deleteMessageLink.setAttribute('onclick', `deleteMessage('${newmessage.id}')`);
+        } else {
+            console.error("Element with ID 'deleteMessageLink' not found.");
+        } +console.log(newmessage.id);
+    }, 3000); 
+    
 });
 
 function formatDate(date) {
@@ -67,8 +80,8 @@ function handleNewMessage(data) {
                                     <i class="bx bx-dots-vertical-rounded fs-4"></i>
                                     </button>
                                 <div class="dropdown-menu dropdown-menu-start" aria-labelledby="chat-header-actions">
-                                    <a href="javascript:void(0)"  style="color:red; text-align:center;" data-bs-toggle="modal" data-bs-target="#deletemessage" onclick="deleteMessage(${data.body})"> <i class="bx bx-trash-alt"></i>Delete </a>
-                            </div>
+                                    <a href="javascript:void(0)" id="deleteMessageLink" style="color:red; text-align:center;" data-bs-toggle="modal" data-bs-target="#deletemessage" onclick="deleteMessage(${data.body})"> <i class="bx bx-trash-alt"></i>Delete </a>
+                                </div>
                             </div>`;
                             chat.innerHTML += `
                             <li class="chat-message ${isthismyMessage ? 'chat-message-right' : 'chat-message-left' } ">
