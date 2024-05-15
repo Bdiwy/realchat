@@ -1,12 +1,12 @@
 var socket = io.connect('http://localhost:5000');
 
-var chat_id  = document.querySelector('#chat_id');
-var body   = document.querySelector('.message-input');
-var send 	  = document.getElementById('sendMessageBtn');
-var chat 	  = document.querySelector('.chat-messages-list');
-var boradcast 	  = document.getElementById('boradcast');
-const chatHistory = document.getElementsByClassName('chatidforrealtime');
-const deleteMessageLink = document.getElementById('deleteMessageLink');
+var chat_id              = document.querySelector('#chat_id');
+var body                 = document.querySelector('.message-input');
+var send 	             = document.getElementById('sendMessageBtn');
+var chat 	             = document.querySelector('.chat-messages-list');
+var boradcast 	         = document.getElementById('boradcast');
+const chatHistory        = document.getElementsByClassName('chatidforrealtime');
+const deleteMessageLink  = document.getElementById('deleteMessageLink');
 
 send.addEventListener('click', function () {
 
@@ -46,7 +46,7 @@ function formatDate(date) {
 // 		chat_id:chat_id.value
 // 	});
 // });
- 
+
 socket.on('new_msg',function(data){
 //  boradcast.innerHTML = '';
     handleNewMessage(data) ;
