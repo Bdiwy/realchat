@@ -7,6 +7,7 @@ var chat 	             = document.querySelector('.chat-messages-list');
 var boradcast 	         = document.getElementById('boradcast');
 const chatHistory        = document.getElementsByClassName('chatidforrealtime');
 const deleteMessageLink  = document.getElementById('deleteMessageLink');
+var messageSound         = document.getElementById('messageSound');
 
 send.addEventListener('click', function () {
 
@@ -50,6 +51,7 @@ function formatDate(date) {
 socket.on('new_msg',function(data){
 //  boradcast.innerHTML = '';
     handleNewMessage(data) ;
+    messageSound.play();
 });
 
 
@@ -115,14 +117,6 @@ function handleNewMessage(data) {
     }
     chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
     };
-
-
-   
-    
-    
-    
-
-
 
 socket.on('new_borad',function(data){
  boradcast.innerHTML = '<strong>'+data.username+': </strong> write message <img src="/write.gif" style="width:25px;height:20px" />';
