@@ -27,7 +27,10 @@ sio.on('connection',function(visitor){
 			sio.sockets.emit('new_msg',data); 
 	});
 
-	
+	visitor.on('deletemessage',function(data){
+		sio.sockets.emit('new_deletemessage',data); 
+	});
+
 	visitor.on('borad',function(data){
 		visitor.broadcast.emit('new_borad',data); 
 	});
