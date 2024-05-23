@@ -13,20 +13,12 @@ var sio = socket(server);
 sio.on('connection',function(visitor){
 	console.log('we have a new visitor as id=>',visitor.id);
 
-	// visitor.on('message', function (data) {
-    //     // Here you can filter the chat members and send the message accordingly
-    //     data.RealTimeResponse.chatmembers.forEach(member => {
-    //         if (data.RealTimeResponse.chat_id == data.chat_id) {
-    //             // sio.to(member.socketId).emit('new_msg', data);
-	// 			// sio.sockets.emit('new_msg',data);
-    //         }
-    //     });
-    // });
-
 	visitor.on('message',function(data){
 			sio.sockets.emit('new_msg',data); 
 	});
-
+	visitor.on('fileMessage',function(data){
+		sio.sockets.emit('fileMessage',data); 
+	});
 	visitor.on('deletemessage',function(data){
 		sio.sockets.emit('new_deletemessage',data); 
 	});
