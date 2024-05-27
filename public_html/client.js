@@ -125,21 +125,6 @@ $(document).ready(function() {
             RealTimeResponse : RealTimeResponse,
         });
     });
-
-    // socket.on('new_deletemessage', function(data) {
-    //     console.log(data.message_id);
-    //     // var messagedelete = document.q(data.message_id); 
-    //     var messagedelete = $('#'+data.message_id+' p'); 
-    //     console.log(messagedelete);
-    //     if (messagedelete) {
-
-    //         messagedelete.html(`${data.RealTimeResponse.userType == 0 ? '<span style="color: red;">&#x2716; this message was deleted</span><br>'+ data.message_value:
-    //         '<span style="color: red;">&#x2716; this message was deleted</span>'}`);  
-    //         messageSound.play();
-    //     } else {
-    //         console.log('hhsdkm');
-    //     }
-    // });
 });
 
 function formatDate(date) {
