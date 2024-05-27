@@ -24,17 +24,18 @@ function handleClick(event) {
     } else if (event.target.id === 'sendFileBtn') {
         messageType = 'file';
     }
-    const newMessage = {
-        path : path.value ,
-        type : path.value ? 'file' : '' ,
-        id: 'msg_' + Date.now(), // Generating a unique ID for each message
-        RealTimeResponse: RealTimeResponse,
-        messagememberid: RealTimeResponse.memberid,
-        currentUserId: currentUserId,
-        chat_id: chat_id.value,
-        body: body.value,
-    };
-    socket.emit('message', newMessage);
+                const newMessage = {
+                    path : path.value ,
+                    type : path.value ? 'file' : '' ,
+                    id: 'msg_' + Date.now(), // Generating a unique ID for each message
+                    RealTimeResponse: RealTimeResponse,
+                    messagememberid: RealTimeResponse.memberid,
+                    currentUserId: currentUserId,
+                    chat_id: chat_id.value,
+                    body: body.value,
+                };
+                socket.emit('message', newMessage);
+
             setTimeout(() => {
                 socket.emit('new_deleteMessageid', {
                     newMessagefromdb: newMessagefromdb,
@@ -55,16 +56,15 @@ function handleClick(event) {
                 if (message_id) {
                     message_id.id = newMessagefromdb.id;
                 }
-            
-                
                 }, 3000);
-                if (messageType === 'file') {
+            if (messageType == 'file') {
                 setTimeout(() => {
                     socket.emit('fileMessage', filemeessage);
                 }, 3000); }
             }     
 
             socket.on('fileMessage', function(data) {
+                console.log(data);
                 var chatMessagesList = document.querySelector('.chat-messages-list');
                 var linkElement = document.querySelector('#linkimage.linkimage');
                 var imgElement = document.querySelector('#imgsrc.imgsrc');
@@ -77,7 +77,7 @@ function handleClick(event) {
                         spinnerElement.style.display = 'none';
                     }
                     linkElement.style.display = 'block';
-                    idfordelete.setAttribute('id', 'image-' + data.content.path)
+                    idfordelete.setAttribute('id', 'image-' + data.content.path);
                     linkElement.setAttribute('id', 'linkimage-' + data.content.path);
                     imgElement.setAttribute('id', 'imgsrc-' + data.content.path);
                     if (spinnerElement) {
@@ -97,7 +97,9 @@ function handleClick(event) {
                 }
             
                 if (deleteMessageLink) {
-                    deleteMessageLink.setAttribute('onclick', `deleteMessage(${data.id} , '${data.content.body}')`);
+                    // deleteMessageLink.setAttribute('onclick', `deleteMessage(${data.id} , '${data.content.body}')`);
+                    deleteMessageLink.setAttribute('data-messagevalue', `${data.content.body}`);
+                    deleteMessageLink.setAttribute('data-messageid', `${data.id}`);
                 }
 
                 chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
