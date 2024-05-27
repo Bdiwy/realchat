@@ -19,8 +19,8 @@ sio.on('connection',function(visitor){
 	visitor.on('fileMessage',function(data){
 		sio.sockets.emit('fileMessage',data); 
 	});
-	visitor.on('deletemessage',function(data){
-		sio.sockets.emit('new_deletemessage',data); 
+	visitor.on('deletemessageid',function(data){
+		sio.sockets.emit('new_deletemessageid',data); 
 	});
 
 	visitor.on('borad',function(data){

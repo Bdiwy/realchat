@@ -16,10 +16,23 @@ var sendButtons = [
     document.getElementById('sendFileBtn')
 ];
 
-  // Function to handle the click event
-function handleClick() {
+sendButtons.forEach(function(btn) {
+    if (btn) {
+        btn.addEventListener('click', handleClick);
+    }
+});
+
+// Function to handle the click event
+function handleClick(event) {
+    let messageType = '';
+    if (event.target.id === 'sendMessageBtn') {
+        messageType = 'text';
+    } else if (event.target.id === 'sendFileBtn') {
+        messageType = 'file';
+    }
+
     const newMessage = {
-        path : path.value ,
+        path: path.value,
         type : path.value ? 'file' : '' ,
         id: 'msg_' + Date.now(), // Generating a unique ID for each message
         RealTimeResponse: RealTimeResponse,
@@ -28,32 +41,38 @@ function handleClick() {
         chat_id: chat_id.value,
         body: body.value,
     };
+    if (messageType === 'text') {
     socket.emit('message', newMessage);
-            setTimeout(() => {
-                socket.emit('new_deleteMessage', {
-                    newmessage: newMessage,
-                });            
-                const deleteMessageLink = document.getElementById(newMessage.body);
-                const messageElements = document.querySelectorAll('#messageid');
+    }
 
-                messageElements.forEach((messageElement) => {
-                    messageElement.id = newMessage.id;
-                });
-            
-                const message_id = document.querySelector('#message_id');
-                if (message_id) {
-                    message_id.id = newMessage.id;
-                }
-            
-                if (deleteMessageLink) {
-                    deleteMessageLink.setAttribute('onclick', `deleteMessage('${newMessage.id}', '${newMessage.body}')`);
-                }
-                }, 500);
+    setTimeout(() => {
+        socket.emit('new_deleteMessageid', {
+            newmessage: newMessage,
+        });
 
-                setTimeout(() => {
-                    socket.emit('fileMessage', filemeessage);
-                }, 1000);
-            }     
+        const deleteMessageLink = document.getElementById(newMessage.body);
+        const messageElements = document.querySelectorAll('#messageid');
+
+        messageElements.forEach((messageElement) => {
+            messageElement.id = newMessage.id;
+        });
+
+        const message_id = document.querySelector('#message_id');
+        if (message_id) {
+            message_id.id = newMessage.id;
+        }
+
+        if (deleteMessageLink) {
+            deleteMessageLink.setAttribute('onclick', `deleteMessage('${newMessage.id}', '${newMessage.body}')`);
+        }
+    }, 500);
+
+    if (messageType === 'file') {
+        setTimeout(() => {
+            socket.emit('fileMessage', newMessage);
+        }, 1000);
+    }
+}
 
             socket.on('fileMessage', function(data) {
                 var chatMessagesList = document.querySelector('.chat-messages-list');
@@ -93,22 +112,11 @@ function handleClick() {
 
                 chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
             });
-            
-            sendButtons.forEach(function(btn) {
-            
-                if (btn) {
-            
-                    btn.addEventListener('click', handleClick);
-            
-                }
-            
-            });
-
 
 $(document).ready(function() {
     $("#deletemessageForm").on("submit", function(event) {
         event.preventDefault();
-        socket.emit('deletemessage', {
+        socket.emit('deletemessageid', {
             message_id: $('#message_id').val(),
             message_value: $('#message_value').val(),
             RealTimeResponse : RealTimeResponse,
